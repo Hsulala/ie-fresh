@@ -14,7 +14,8 @@
 
   /* Top bar */
   #topbar {
-    background: #111;
+    background: #1a1a1a;
+    border-bottom: 1px solid #2e2e2e;
     height: 54px;
     display: flex;
     align-items: center;
@@ -26,10 +27,10 @@
   }
   #brand { margin-right: 32px; }
   #brand span { color: #fff; font-weight: 900; font-size: 15px; letter-spacing: 1px; }
-  #brand small { color: #555; font-size: 12px; margin-left: 10px; }
+  #brand small { color: #999; font-size: 12px; margin-left: 10px; }
   .tab-btn {
     background: transparent;
-    color: #555;
+    color: #aaa;
     border: none;
     border-bottom: 2px solid transparent;
     padding: 0 16px;
@@ -41,6 +42,7 @@
     transition: all 0.15s;
   }
   .tab-btn.active { color: #fff; border-bottom-color: #fff; font-weight: 700; }
+  .tab-btn:hover:not(.active) { color: #ccc; }
   #spacer { flex: 1; }
   #export-btn {
     background: #fff;
@@ -226,7 +228,6 @@
   <button class="tab-btn" data-tab="ready">即食調理</button>
   <button class="tab-btn" data-tab="soft">場合推薦</button>
   <div id="spacer"></div>
-  <button id="export-btn">匯出 JSON</button>
 </div>
 
 <div id="content">
@@ -542,29 +543,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('section-title').textContent = tabMeta[tab].title;
     document.getElementById('section-desc').textContent = tabMeta[tab].desc;
   });
-});
-
-// ─── Export ───────────────────────────────────────────────────────────────────
-
-document.getElementById('export-btn').addEventListener('click', () => {
-  // Sync any edited names from inputs
-  document.querySelectorAll('.cat-name').forEach(input => {
-    const card = input.closest('.cat-card');
-    const tabKey = card.closest('.tab-panel').id.replace('panel-', '');
-    const catId = card.dataset.catId;
-    const cat = state[tabKey].find(c => c.id === catId);
-    if (cat) cat.name = input.value;
-  });
-
-  const data = { hardCategories: state.hard, freshCategories: state.fresh, readyCategories: state.ready, softCategories: state.soft };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'aiyaojieshi-categories.json'; a.click();
-  const btn = document.getElementById('export-btn');
-  btn.textContent = '已匯出';
-  btn.classList.add('done');
-  setTimeout(() => { btn.textContent = '匯出 JSON'; btn.classList.remove('done'); }, 2000);
 });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
